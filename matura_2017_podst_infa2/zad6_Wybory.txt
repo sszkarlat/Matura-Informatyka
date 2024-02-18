@@ -1,0 +1,20 @@
+1. SELECT "Dziewczyny" as plec, COUNT(*) as ilosc FROM `uczniowie` 
+WHERE imie LIKE "%a"
+
+UNION
+
+SELECT "Chłopcy" as plec, COUNT(*) as ilosc FROM `uczniowie` 
+WHERE imie NOT LIKE "%a"
+
+2. SELECT k.imie, k.nazwisko, COUNT(*) as ilosc FROM `glosy` g
+JOIN `kandydaci` k ON (k.id_kandydata=g.id_kandydata)
+GROUP BY k.imie, k.nazwisko
+ORDER BY ilosc DESC
+LIMIT 10
+
+3. SELECT COUNT(u.id_ucznia) as ilosc FROM `uczniowie` u 
+WHERE u.id_ucznia NOT IN (SELECT g.id_ucznia FROM `glosy` g)
+
+4. SELECT u.rok_nauki, ROUND(COUNT(g.id_glosu)/9,2) as srednia FROM `uczniowie` u
+JOIN `glosy` g ON (g.id_ucznia=u.id_ucznia)
+GROUP BY u.rok_nauki

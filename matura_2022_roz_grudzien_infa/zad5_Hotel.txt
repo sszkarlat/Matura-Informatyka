@@ -1,0 +1,31 @@
+1.
+SELECT k.imie, k.nazwisko, SUM(DATEDIFF(n.data_wyjazdu, n.data_przyjazdu)) as liczba_noclegow FROM `noclegi` n
+JOIN `klienci` k ON (k.nr_dowodu=n.nr_dowodu)
+GROUP BY k.imie, k.nazwisko
+ORDER BY liczba_noclegow DESC
+LIMIT 1;
+
+2.
+SELECT k.imie, k.nazwisko, SUM(((DATEDIFF(n.data_wyjazdu, n.data_przyjazdu))*p.cena)) as kwota FROM `noclegi` n
+JOIN `klienci` k ON (k.nr_dowodu=n.nr_dowodu)
+JOIN `pokoje` p ON (p.nr_pokoju=n.nr_pokoju)
+GROUP BY k.imie, k.nazwisko
+HAVING kwota > 2000;
+
+3.
+SELECT po.nr_pokoju FROM `pokoje` po
+WHERE po.standard LIKE "N" AND po.nr_pokoju NOT IN (SELECT n.nr_pokoju FROM `noclegi` n 
+JOIN `pokoje` p ON (p.nr_pokoju=n.nr_pokoju)
+JOIN `klienci` k ON (k.nr_dowodu=n.nr_dowodu)
+WHERE (k.miejscowosc LIKE "Opole" OR k.miejscowosc LIKE "Katowice")
+GROUP BY n.nr_pokoju);
+
+4.
+SELECT u.rodzaj, COUNT(id_pobytu) as ilosc `uslugi_dodatkowe` u
+GROUP BY u.rodzaj;
+
+5.
+SELECT k.imie, k.nazwisko, SUM(cena_uslugi) FROM `klienci` k
+JOIN `noclegi` n ON (n.nr_dowodu=k.nr_dowodu)
+JOIN `uslugi_dodatkowe` u ON (u.id_pobytu=n.id_pobytu)
+GROUP BY k.imie, k.nazwisko;

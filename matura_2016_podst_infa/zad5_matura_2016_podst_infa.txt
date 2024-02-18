@@ -1,0 +1,9 @@
+1) SELECT imie, nazwisko FROM klienci, zamowienia, produkty WHERE Grupa_towarowa="Notebooki" AND Producent="HW" AND klienci.ID_klienta = zamowienia.ID_klienta AND produkty.ID_Produktu = zamowienia.ID_Produktu ORDER BY nazwisko ASC 
+
+2) SELECT Nazwa_produktu, Grupa_towarowa, Producent FROM klienci, produkty, zamowienia WHERE imie="Anna" AND nazwisko="Kotnicka" AND klienci.ID_klienta = zamowienia.ID_klienta AND produkty.ID_Produktu = zamowienia.ID_Produktu
+
+3) SELECT imie, nazwisko, COUNT(zamowienia.ID_zamowienia) AS Ilezamowien FROM klienci, zamowienia WHERE klienci.ID_klienta = zamowienia.ID_klienta GROUP BY zamowienia.ID_klienta ORDER BY Ilezamowien DESC LIMIT 1
+
+4) SELECT imie, nazwisko, SUM(zamowienia.Liczba_sztuk * produkty.Cena_brutto) AS suma FROM klienci, produkty, zamowienia WHERE klienci.ID_klienta = zamowienia.ID_klienta AND produkty.ID_Produktu = zamowienia.ID_Produktu GROUP BY zamowienia.ID_klienta ORDER BY suma DESC LIMIT 3
+
+5) SELECT SUM(zamowienia.Liczba_sztuk) AS suma FROM produkty, zamowienia WHERE Grupa_towarowa="Notebooki" AND DATA LIKE "2013-03%" AND produkty.ID_Produktu = zamowienia.ID_Produktu 

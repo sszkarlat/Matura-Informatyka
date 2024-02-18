@@ -1,0 +1,40 @@
+1) SELECT s.imie, s.nazwisko, t.najwiecej FROM `2016r_studenci` s
+JOIN 
+(SELECT w.pesel, COUNT(w.tytul) as najwiecej FROM `2016r_wypozyczenia` w 
+GROUP BY w.pesel) as t ON (t.pesel=s.pesel)
+ORDER BY t.najwiecej DESC
+LIMIT 1
+# Następnie wykonuje kolejne polecenie w celu sprawdzenia wypożyczonych tytułów
+SELECT w.tytul FROM `2016r_wypozyczenia` w 
+JOIN `2016r_studenci` s ON (s.pesel=w.pesel)
+WHERE s.imie LIKE "Krzysztof" AND s.nazwisko LIKE "Lewandowski"
+ORDER BY w.tytul ASC
+
+2) 
+I) SELECT ROUND(COUNT(m.pesel)/COUNT(DISTINCT m.id_pok),4) as srednia FROM `2016r_meldunek` m
+
+II) SELECT ROUND(AVG(t.ilosc),4) as srednia 
+FROM (SELECT id_pok, COUNT(*) as ilosc FROM `2016r_meldunek` 
+GROUP BY id_pok) as t
+
+3) 
+I) SELECT "Mezczyzni" as plec, COUNT(s.pesel) as liczba FROM `2016r_studenci` s
+WHERE (s.pesel LIKE '%1_') OR (s.pesel LIKE '%3_') OR (s.pesel LIKE '%5_') OR (s.pesel LIKE '%7_') OR (s.pesel LIKE '%9_')
+
+UNION 
+
+SELECT "Kobiety" as plec, COUNT(s.pesel) as liczba FROM `2016r_studenci` s
+WHERE (s.pesel LIKE '%0_') OR (s.pesel LIKE '%2_') OR (s.pesel LIKE '%4_') OR (s.pesel LIKE '%6_') OR (s.pesel LIKE '%8_')
+
+II) SELECT COUNT(*) as ilosc FROM `2016r_studenci` s
+WHERE substring(s.pesel,-2,1)%2=1
+
+4) SELECT s.nazwisko, s.imie FROM `2016r_studenci` s 
+WHERE s.pesel NOT IN (SELECT m.pesel FROM `2016r_meldunek` m)
+ORDER BY s.nazwisko ASC
+
+5) 
+I) SELECT 330-SUM(t.za_duzo_o) as ilosc FROM (SELECT w.tytul, m.id_pok, COUNT(*)-1 as za_duzo_o FROM `2016r_wypozyczenia` w 
+JOIN `2016r_meldunek` m ON (w.pesel=m.pesel)
+GROUP BY w.tytul, m.id_pok
+HAVING za_duzo_o>=1) as t

@@ -1,0 +1,27 @@
+1) SELECT o.imie, o.nazwisko, k.nr_konta FROM `2015_osoby` o
+JOIN `2015_konta` k ON (k.id_osoby=o.id_osoby)
+WHERE nr_konta LIKE "49%"
+
+2) SELECT o.imie, o.nazwisko, t.srodki FROM `2015_osoby` o
+JOIN 
+(SELECT o.id_osoby, SUM(k.dostepne_srodki) as srodki FROM `2015_osoby` o
+JOIN `2015_konta` k ON (k.id_osoby=o.id_osoby)
+GROUP BY o.id_osoby
+ORDER BY srodki DESC
+LIMIT 1) as t ON (o.id_osoby=t.id_osoby)
+
+3) SELECT o.imie, o.nazwisko, t.liczba_kont FROM `2015_osoby` o
+JOIN
+(SELECT o.id_osoby, COUNT(k.nr_konta) as liczba_kont FROM `2015_osoby` o
+JOIN `2015_konta` k ON (k.id_osoby=o.id_osoby)
+GROUP BY o.id_osoby)
+as t ON (t.id_osoby=o.id_osoby)
+ORDER BY t.liczba_kont DESC
+
+4) SELECT k.bank, COUNT(k.nr_konta) as liczba_kont, SUM(k.dostepne_srodki) as laczna_kwota FROM `2015_konta` k
+GROUP BY k.bank
+ORDER BY liczba_kont DESC
+-----------------------------------------------------------
+SELECT k.bank, COUNT(k.nr_konta) as liczba_kont, SUM(k.dostepne_srodki) as laczna_kwota FROM `2015_konta` k
+GROUP BY k.bank
+ORDER BY liczba_kont ASC

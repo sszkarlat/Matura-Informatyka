@@ -1,0 +1,54 @@
+1) SELECT wys.rok, wys.GrandPrix FROM `kierowcy` k 
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE k.Imie LIKE "Robert" AND k.Nazwisko LIKE "Kubica"
+ORDER BY wyn.punkty DESC
+LIMIT 1
+
+2) SELECT w.GrandPrix, COUNT(*) as ilosc FROM `wyscigi` w
+GROUP BY w.GrandPrix
+ORDER BY ilosc ASC
+LIMIT 1
+
+3) 
+#Trzy polecenia
+SELECT k.Imie, k.Nazwisko, wys.rok, SUM(wyn.punkty) as ilosc FROM `kierowcy` k
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE wys.rok LIKE "2000"
+GROUP BY k.Imie, k.Nazwisko, wys.rok
+ORDER BY ilosc DESC
+LIMIT 1;
+
+SELECT k.Imie, k.Nazwisko, wys.rok, SUM(wyn.punkty) as ilosc FROM `kierowcy` k
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE wys.rok LIKE "2006"
+GROUP BY k.Imie, k.Nazwisko, wys.rok
+ORDER BY ilosc DESC
+LIMIT 1;
+
+SELECT k.Imie, k.Nazwisko, wys.rok, SUM(wyn.punkty) as ilosc FROM `kierowcy` k
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE wys.rok LIKE "2012"
+GROUP BY k.Imie, k.Nazwisko, wys.rok
+ORDER BY ilosc DESC
+LIMIT 1
+
+#Ewentualnie można to zrobić jednym pytaniem
+SELECT t.imie, t.nazwisko, t.rok, t.suma FROM 
+(SELECT k.Imie, k.Nazwisko, wys.rok, SUM(wyn.punkty) as suma FROM `kierowcy` k
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE wys.rok IN("2000", "2006", "2012")
+GROUP BY k.Imie, k.Nazwisko, wys.rok
+ORDER BY wys.rok ASC, suma DESC) as t 
+GROUP BY t.rok
+ORDER BY t.rok ASC, t.suma DESC
+
+4) SELECT k.kraj, COUNT(DISTINCT k.Id_kierowcy) as ilosc FROM `kierowcy` k
+JOIN `wyniki` wyn ON (wyn.Id_kierowcy=k.Id_kierowcy)
+JOIN `wyscigi` wys ON (wys.Id_wyscigu=wyn.Id_wyscigu)
+WHERE wys.Rok LIKE "2012"
+GROUP BY k.kraj

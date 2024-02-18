@@ -1,0 +1,31 @@
+1) SELECT a.kraj_urodzenia, COUNT(*) as ilosc FROM `aktorzy` a 
+GROUP BY a.kraj_urodzenia
+ORDER BY ilosc ASC;
+
+2) SELECT a.imie, a.nazwisko, (f.rok-YEAR(a.data_ur)) as wiek FROM `filmy` f 
+JOIN `nagrody` n ON (n.id_filmu=f.id_filmu)
+JOIN `aktorzy` a ON (a.id_aktora=n.id_aktora)
+ORDER BY wiek ASC
+LIMIT 1
+
+3) SELECT a.imie, a.nazwisko, f.rok, f.tytul FROM `aktorzy` a 
+JOIN (SELECT a.id_aktora, COUNT(n.id_aktora) as ilosc FROM `aktorzy` a 
+JOIN `nagrody` n ON (n.id_aktora=a.id_aktora)
+JOIN `filmy` f ON (f.id_filmu=n.id_filmu)
+GROUP BY a.id_aktora  
+ORDER BY ilosc DESC
+LIMIT 1) as t ON (t.id_aktora=a.id_aktora)
+JOIN `nagrody` n ON (n.id_aktora=a.id_aktora)
+JOIN `filmy` f ON (f.id_filmu=n.id_filmu);
+
+4) SELECT a.imie, a.nazwisko, tv.okres FROM `aktorzy` a 
+JOIN(SELECT a.id_aktora, MAX(abs(t.rok1-f.rok)) as okres FROM `aktorzy` a
+JOIN `nagrody` n ON (n.id_aktora=a.id_aktora)
+JOIN `filmy` f ON (f.id_filmu=n.id_filmu)
+JOIN (SELECT a.id_aktora, f.rok as rok1 FROM `aktorzy` a 
+JOIN `nagrody` n ON (n.id_aktora=a.id_aktora)
+JOIN `filmy` f ON (f.id_filmu=n.id_filmu)
+WHERE n.kategoria LIKE "%drugo%"
+GROUP BY a.id_aktora) as t ON (t.id_aktora=a.id_aktora)
+WHERE n.kategoria LIKE "%pierwszo%"
+GROUP BY a.id_aktora) as tv ON (tv.id_aktora=a.id_aktora);

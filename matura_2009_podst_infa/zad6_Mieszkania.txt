@@ -1,0 +1,21 @@
+a) SELECT COUNT(t.ilosc) as liczba_osob 
+FROM (SELECT o.imie, o.nazwisko, COUNT(o.id_mieszkania) as ilosc FROM `osoby` o 
+GROUP BY o.imie, o.nazwisko
+HAVING ilosc>1) as t
+
+b) SELECT a.id_mieszkania, ROUND((a.metraz/o.liczba_osob),1) as ilosc FROM `adres` a 
+JOIN `osoby` o ON (o.id_mieszkania=a.id_mieszkania)
+GROUP BY a.id_mieszkania
+HAVING ilosc<6
+
+c) SELECT o.nazwisko, o.imie FROM `adres` a 
+JOIN `osoby` o ON (o.id_mieszkania=a.id_mieszkania)
+WHERE a.metraz>90 and o.liczba_osob=1
+
+d) SELECT "Kobiet" as plec, COUNT(DISTINCT o.nazwisko, o.imie) as ilosc FROM `osoby` o
+WHERE o.imie LIKE "%a"
+
+UNION
+
+SELECT "Mężczyzn" as plec, COUNT(DISTINCT o.nazwisko, o.imie) as ilosc FROM `osoby` o
+WHERE o.imie NOT LIKE "%a"

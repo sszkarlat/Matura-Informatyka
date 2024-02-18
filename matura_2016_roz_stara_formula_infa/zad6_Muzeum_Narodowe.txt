@@ -1,0 +1,27 @@
+1. SELECT m.Imie, m.Nazwisko, COUNT(*) as ilosc FROM `obrazy` o 
+JOIN `malarze` m ON (m.ID_malarza=o.ID_malarza)
+WHERE o.Stan LIKE "ekspozycja czasowa" OR o.Stan LIKE "ekspozycja stala"
+GROUP BY m.Imie, m.Nazwisko
+ORDER BY ilosc DESC
+LIMIT 2;
+
+2. SELECT o.Tytul, m.Imie, m.Nazwisko FROM `obrazy` o 
+JOIN `malarze` m ON (m.id_malarza=o.id_malarza)
+WHERE o.Tytul LIKE "%polowanie%" OR o.Tytul LIKE "%Polowanie%";
+
+3. SELECT od.Miejscowosc, ob.Stan, COUNT(*) as ilosc FROM `obrazy` ob 
+JOIN `oddzialy` od ON (od.ID_oddzialu=ob.ID_oddzialu)
+GROUP BY od.Miejscowosc, ob.Stan
+ORDER BY od.Miejscowosc ASC;
+
+4. SELECT MID(o.Tytul, 1, 1) as litera, COUNT(*) as ilosc FROM `obrazy` o
+GROUP BY litera
+ORDER BY ilosc DESC
+LIMIT 1;
+
+5. SELECT m.Imie, m.Nazwisko, COUNT(*) as ilosc FROM `obrazy` o 
+JOIN `malarze` m ON (m.ID_malarza=o.ID_malarza)
+WHERE o.Stan LIKE "wypozyczony"
+GROUP BY m.Imie, m.Nazwisko
+ORDER BY ilosc DESC
+LIMIT 1;

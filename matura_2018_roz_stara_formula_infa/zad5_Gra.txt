@@ -1,0 +1,28 @@
+1. SELECT l.data_losowania, l.nr1, l.nr2, l.nr3, l.nr4, l.nr5 FROM `losowania` l 
+JOIN `wygrane` w ON (w.id_losowania=l.id_losowania)
+JOIN `punkty` p ON (p.id_punktu=w.id_punktu)
+WHERE p.miasto LIKE "Swidnica";
+
+2. SELECT l.data_losowania, p.miasto, (l.nr1+l.nr2+l.nr3+l.nr4+l.nr5) as suma FROM `losowania` l 
+JOIN `wygrane` w ON (w.id_losowania=l.id_losowania)
+JOIN `punkty` p ON (p.id_punktu=w.id_punktu)
+ORDER BY suma DESC
+LIMIT 1;
+
+3. SELECT l.data_losowania FROM `losowania` l 
+JOIN `wygrane` w ON (w.id_losowania=l.id_losowania)
+JOIN `punkty` p ON (p.id_punktu=w.id_punktu)
+WHERE p.miasto LIKE "Krakow" AND (l.nr1=DAY(l.data_losowania) OR l.nr2=DAY(l.data_losowania) OR l.nr3=DAY(l.data_losowania) OR l.nr4=DAY(l.data_losowania ) OR l.nr5=DAY(l.data_losowania));
+
+4. SELECT p.miasto, COUNT(*) as ilość FROM `losowania` l 
+JOIN `wygrane` w ON (w.id_losowania=l.id_losowania)
+JOIN `punkty` p ON (p.id_punktu=w.id_punktu)
+GROUP BY p.miasto
+HAVING ilość >= 17
+ORDER BY p.miasto ASC;
+
+5. SELECT l.data_losowania FROM `losowania` l
+WHERE l.id_losowania NOT IN
+(SELECT w.id_losowania FROM `losowania` l 
+JOIN `wygrane` w ON (w.id_losowania=l.id_losowania)
+JOIN `punkty` p ON (p.id_punktu=w.id_punktu));

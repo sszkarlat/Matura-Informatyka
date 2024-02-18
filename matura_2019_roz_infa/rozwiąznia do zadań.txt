@@ -1,0 +1,5 @@
+1) SELECT perfumy.nazwa_p FROM perfumy, sklad WHERE sklad.nazwa_skladnika LIKE "absolut jasminu" AND perfumy.id_perfum=sklad.id_perfum
+
+2) SELECT rodzina_zapachow, cena, nazwa_p FROM perfumy JOIN (SELECT rodzina_zapachow AS rz, MIN(cena) AS kwota FROM perfumy GROUP BY rodzina_zapachow) AS tv WHERE perfumy.rodzina_zapachow=tv.rz AND tv.kwota=perfumy.cena
+
+3) 

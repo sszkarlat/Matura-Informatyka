@@ -1,0 +1,31 @@
+1) SELECT  pr.program, pr.cena, COUNT(DISTINCT pa.Id_pakietu) as ilosc FROM `programy` pr
+JOIN `zestawy` z ON (z.Id_programu=pr.Id_programu)
+JOIN `pakiety` pa ON (pa.Id_pakietu=z.Id_pakietu)
+WHERE pr.rodzaj LIKE "edytor dokumentow tekstowych"
+GROUP BY pr.program
+HAVING ilosc >1
+
+2) SELECT DISTINCT pa.nazwa_pakietu FROM `pakiety` pa 
+JOIN `zestawy` z ON (z.Id_pakietu=pa.Id_pakietu)
+JOIN `programy` pr ON (pr.Id_programu=z.Id_programu)
+WHERE pr.rodzaj LIKE "%zarzadzanie%"
+
+3) SELECT pa.nazwa_pakietu, pa.firma, SUM(pr.cena) as wartosc FROM `pakiety` pa 
+JOIN `zestawy` z ON (z.Id_pakietu=pa.Id_pakietu)
+JOIN `programy` pr ON (pr.Id_programu=z.Id_programu)
+GROUP BY pa.nazwa_pakietu
+ORDER BY wartosc DESC
+LIMIT 3
+
+4) SELECT pro.program FROM `programy` pro WHERE pro.program NOT IN 
+(SELECT pr.program FROM `pakiety` pa 
+JOIN `zestawy` z ON (z.Id_pakietu=pa.Id_pakietu)
+JOIN `programy` pr ON (pr.Id_programu=z.Id_programu))
+
+5) #Nie dokończone!!!
+SELECT pa.nazwa_pakietu, COUNT(*) as komercyjne FROM `pakiety` pa 
+JOIN `zestawy` z ON (z.Id_pakietu=pa.Id_pakietu)
+JOIN `programy` pr ON (pr.Id_programu=z.Id_programu)
+WHERE pr.cena>0
+GROUP BY pa.nazwa_pakietu
+HAVING komercyjne >0;

@@ -1,0 +1,27 @@
+1) SELECT j.Rodzina, COUNT(*) as ilosc FROM `2020r_jezyki` j 
+GROUP BY j.Rodzina
+ORDER BY ilosc DESC
+
+2) SELECT COUNT(*) as ilosc FROM `2020r_jezyki` j WHERE j.jezyk
+NOT IN (SELECT DISTINCT u.jezyk FROM `2020r_uzytkownicy` u 
+WHERE u.urzedowy LIKE "tak")
+
+3) SELECT u.jezyk, COUNT(DISTINCT p.Kontynent) ilosc FROM `2020r_uzytkownicy` u
+JOIN `2020r_panstwa` p ON (p.Panstwo=u.Panstwo)
+GROUP BY u.jezyk
+ORDER BY ilosc DESC
+
+4) SELECT j.jezyk, j.Rodzina, t.uzytkownicy FROM `2020r_jezyki` j
+JOIN
+(SELECT u.jezyk, SUM(u.Uzytkownicy) as uzytkownicy FROM `2020r_uzytkownicy` u 
+JOIN `2020r_jezyki` j ON (j.Jezyk=u.Jezyk)
+JOIN `2020r_panstwa` p ON (u.Panstwo=p.Panstwo)
+WHERE j.Rodzina NOT LIKE "indoeuropejska" AND p.Kontynent LIKE "Ameryka%"
+GROUP BY u.jezyk) as t ON (t.jezyk=j.jezyk)
+ORDER BY t.uzytkownicy DESC
+LIMIT 6
+
+5) SELECT u.Panstwo, u.jezyk, ROUND((u.uzytkownicy/p.populacja)*100,2) as srednia FROM `2020r_uzytkownicy` u 
+JOIN `2020r_panstwa` p ON (p.Panstwo=u.Panstwo)
+WHERE u.urzedowy LIKE "nie"
+HAVING srednia > 30

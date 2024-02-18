@@ -1,0 +1,34 @@
+1) SELECT g.kraj, COUNT(*) as liczba_graczy FROM `2021r_gracze` g
+WHERE g.data_dolaczenia LIKE "2018%"
+GROUP BY g.kraj
+ORDER BY liczba_graczy DESC
+LIMIT 5
+
+2) SELECT k.nazwa, SUM(k.strzal) as suma FROM `2021r_klasy` k
+JOIN `2021r_jednostki` j ON (j.nazwa=k.nazwa)
+WHERE k.nazwa LIKE "%elf%"
+GROUP BY k.nazwa
+
+3) SELECT DISTINCT je.id_gracza FROM `2021r_jednostki` je 
+WHERE je.id_gracza NOT IN (SELECT j.id_gracza FROM `2021r_jednostki` j 
+WHERE j.nazwa LIKE "artylerzysta")
+ORDER BY je.id_gracza ASC
+
+4) SELECT je.nazwa, COUNT(t.ilosc) as liczba_jednostek FROM `2021r_jednostki` je
+JOIN (SELECT j.id_jednostki, (ABS(j.lok_x-100)+ABS(j.lok_y-100)<=k.szybkosc) as ilosc FROM `2021r_jednostki` j 
+JOIN `2021r_klasy` k ON (k.nazwa=j.nazwa)
+HAVING ilosc=1) as t ON (t.id_jednostki=je.id_jednostki)
+GROUP BY je.nazwa
+
+5) 
+a) SELECT j.lok_x, j.lok_y, COUNT(DISTINCT j.id_gracza) as ilosc FROM `2021r_jednostki` j 
+GROUP BY j.lok_x, j.lok_y
+HAVING ilosc>1
+#Następnie odczytujemy liczbę wierszy. Jest ich 1061, więc 1061 bitew ma miejsce na planszy. 
+
+b) SELECT j.lok_x, j.lok_y, COUNT(DISTINCT j.id_gracza) as ilosc FROM `2021r_jednostki` j
+JOIN `2021r_gracze` g ON (g.id_gracza=j.id_gracza)
+WHERE g.kraj LIKE "Polska"
+GROUP BY j.lok_x, j.lok_y
+HAVING ilosc>1
+#ŹLE!!!

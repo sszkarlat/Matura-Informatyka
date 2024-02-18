@@ -1,0 +1,18 @@
+1) SELECT Osoby.imie, Osoby.nazwisko, Konta.nr_konta
+FROM Osoby INNER JOIN Konta ON Osoby.id_osoby = Konta.id_osoby
+WHERE (((Konta.nr_konta) Like "49*"));
+
+2) SELECT TOP 1 Osoby.imie, Osoby.nazwisko, Sum(Konta.dostepne_srodki) AS SumaOfdostepne_srodki
+FROM Osoby INNER JOIN Konta ON Osoby.id_osoby = Konta.id_osoby
+GROUP BY Osoby.imie, Osoby.nazwisko
+ORDER BY Sum(Konta.dostepne_srodki) DESC;
+
+3) SELECT Osoby.imie, Osoby.nazwisko, Count(Konta.nr_konta) AS PoliczOfnr_konta
+FROM Osoby INNER JOIN Konta ON Osoby.id_osoby = Konta.id_osoby
+GROUP BY Osoby.imie, Osoby.nazwisko
+ORDER BY Count(Konta.nr_konta) DESC;
+
+4) SELECT Konta.bank, Count(Konta.nr_konta) AS PoliczOfnr_konta, Sum(Konta.dostepne_srodki) AS SumaOfdostepne_srodki
+FROM Osoby INNER JOIN Konta ON Osoby.id_osoby = Konta.id_osoby
+GROUP BY Konta.bank
+ORDER BY Count(Konta.nr_konta) DESC;

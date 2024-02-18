@@ -1,0 +1,32 @@
+1. SELECT COUNT(id) as ilosc FROM `koncerty`
+WHERE data LIKE "%-07-%";
+
+2. SELECT DISTINCT m.miasto, SUM(DISTINCT z.liczba_artystow) as ilosc FROM `koncerty` k 
+JOIN `miasta` m ON (m.kod_miasta=k.kod_miasta)
+JOIN `zespoly` z ON (z.id_zespolu=k.id_zespolu)
+GROUP BY m.miasto
+ORDER BY ilosc DESC
+# nie wiem czemu jest źle
+
+3. SELECT m.wojewodztwo, ROUND((COUNT(k.id)/ilosc1),2) as srednia FROM `koncerty` k
+JOIN `miasta` m ON (m.kod_miasta=k.kod_miasta)
+JOIN `zespoly` z ON (z.id_zespolu=k.id_zespolu)
+JOIN (SELECT m.wojewodztwo, COUNT(m.miasto) as ilosc1 FROM `miasta` m
+GROUP BY m.wojewodztwo) as t ON (t.wojewodztwo=m.wojewodztwo)
+GROUP BY m.wojewodztwo
+ORDER BY srednia DESC
+
+4. SELECT z.nazwa FROM `zespoly` z WHERE z.nazwa NOT IN 
+(SELECT z.nazwa FROM `zespoly` z
+JOIN `koncerty` k ON (k.id_zespolu=z.id_zespolu)
+WHERE k.data BETWEEN "2017-07-20" AND "2017-07-25")
+
+5. SELECT v.nazwa, v.weekend, v.tydzien FROM (SELECT z.nazwa, COUNT(WEEKDAY(k.data)) as tydzien, t.weekend FROM `zespoly` z
+JOIN `koncerty` k ON (k.id_zespolu=z.id_zespolu)
+JOIN (SELECT z.nazwa, COUNT(WEEKDAY(k.data)) as weekend FROM `zespoly` z
+JOIN `koncerty` k ON (k.id_zespolu=z.id_zespolu)
+WHERE WEEKDAY(k.data)=5 OR WEEKDAY(k.data)=6
+GROUP BY z.nazwa) as t ON (t.nazwa=z.nazwa)
+WHERE WEEKDAY(k.data)=0 OR WEEKDAY(k.data)=1 OR WEEKDAY(k.data)=2 OR WEEKDAY(k.data)=3 OR WEEKDAY(k.data)=4
+GROUP BY z.nazwa) as v
+WHERE v.weekend>v.tydzien

@@ -1,0 +1,27 @@
+1. 
+a) SELECT s.imie, s.nazwisko, COUNT(*) as ilosc FROM `studenci` s 
+JOIN `wypozyczenia` w ON (w.pesel=s.pesel)
+GROUP BY s.imie, s.nazwisko
+ORDER BY ilosc DESC;
+
+b) SELECT w.tytul FROM `wypozyczenia` w 
+JOIN `studenci` s ON (s.pesel=w.pesel)
+WHERE s.imie LIKE "Krzysztof" AND s.nazwisko LIKE "Lewandowski"
+
+2. SELECT ROUND(COUNT(m.pesel)/COUNT(DISTINCT m.id_pok),4) as srednia FROM `2016r_meldunek` m
+
+3. SELECT "kobieta" as plec, COUNT(s.pesel) as ilosc FROM `studenci` s
+WHERE s.pesel LIKE "%0_" OR s.pesel LIKE "%2_" OR s.pesel LIKE "%4_" OR s.pesel LIKE "%6_" OR s.pesel LIKE "%8_"
+
+UNION
+
+SELECT "mezczyzna" as plec, COUNT(s.pesel) as ilosc FROM `studenci` s
+WHERE s.pesel LIKE "%1_" OR s.pesel LIKE "%3_" OR s.pesel LIKE "%5_" OR s.pesel LIKE "%7_" OR s.pesel LIKE "%9_";
+
+4. SELECT COUNT(w.tytul)-SUM(t.za_duzo_o) FROM `wypozyczenia` w
+JOIN () as t ON (t.tytul=w.tytul);
+
+5. SELECT 330-SUM(t.za_duzo_o) as ilosc FROM (SELECT w.tytul, m.id_pok, COUNT(*)-1 as za_duzo_o FROM `wypozyczenia` w 
+JOIN `meldunek` m ON (w.pesel=m.pesel)
+GROUP BY w.tytul, m.id_pok
+HAVING za_duzo_o>=1) as t;

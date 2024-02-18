@@ -1,0 +1,28 @@
+1) SELECT k.Pojemnosc_dysku, COUNT(k.Numer_komputera) as ilosc FROM `komputery` k 
+GROUP BY k.Pojemnosc_dysku
+ORDER BY ilosc DESC
+LIMIT 10;
+
+2) SELECT k.Numer_komputera, COUNT(*) as ilosc FROM `komputery` k 
+JOIN `awarie` a ON (k.Numer_komputera=a.Numer_komputera)
+JOIN `naprawy` n ON (n.Numer_zgloszenia=a.Numer_zgloszenia)
+WHERE k.Sekcja LIKE "A" AND n.Rodzaj LIKE "wymiana"
+GROUP BY k.Numer_komputera
+HAVING ilosc >=10;
+
+3) SELECT DATE(a.Czas_awarii) as Data, k.Sekcja, COUNT(DISTINCT k.Numer_komputera) Ilosc FROM `awarie` a
+JOIN `komputery` k ON (k.Numer_komputera=a.Numer_komputera)
+GROUP BY DATE(a.Czas_awarii), k.Sekcja
+ORDER BY ilosc DESC
+LIMIT 1;
+
+4) SELECT a.Numer_zgloszenia, a.Czas_awarii, n.Czas_naprawy, TIMESTAMPDIFF(SECOND, a.Czas_awarii, n.Czas_naprawy) as czas_trwania_naprawy_w_sekundach 
+FROM `awarie` a
+JOIN `naprawy` n ON (n.Numer_zgloszenia=a.Numer_zgloszenia)
+ORDER BY czas_trwania_naprawy_w_sekundach DESC
+LIMIT 1;
+
+5) SELECT COUNT(k.Numer_komputera) as ilosc1 FROM `komputery` k WHERE k.Numer_komputera NOT IN (
+SELECT DISTINCT a.Numer_komputera FROM `awarie` a
+WHERE a.Priorytet >=8
+ORDER BY a.Numer_komputera ASC);

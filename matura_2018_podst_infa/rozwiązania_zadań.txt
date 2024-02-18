@@ -1,0 +1,40 @@
+1) SELECT Harcerze.Druzyna, Count(Harcerze.Id_harcerza) AS PoliczOfId_harcerza
+FROM Harcerze
+GROUP BY Harcerze.Druzyna;
+
+2) 
+a) SELECT Sprawnosc.Nazwa_sprawnosci, Sum(Dzialania.L_punktow) AS SumaOfL_punktow
+FROM Sprawnosc INNER JOIN Dzialania ON Sprawnosc.Id_sprawnosci=Dzialania.Id_sprawnosci
+GROUP BY Sprawnosc.Nazwa_sprawnosci
+ORDER BY Sum(Dzialania.L_punktow) DESC;
+
+b) SELECT [4_2_1].Nazwa_sprawnosci
+FROM 4_2_1
+WHERE ((([4_2_1].SumaOfL_punktow)=(SELECT MAX(SumaOfL_punktow) FROM 4_2_1) Or ([4_2_1].SumaOfL_punktow)=(SELECT MIN(SumaOfL_punktow) FROM 4_2_1)));
+
+3)
+a) SELECT Harcerze.Imie, Harcerze.Nazwisko, Sprawnosc.Id_sprawnosci
+FROM Sprawnosc INNER JOIN (Harcerze INNER JOIN Dzialania ON Harcerze.Id_harcerza=Dzialania.Id_harcerza) ON Sprawnosc.Id_sprawnosci=Dzialania.Id_sprawnosci
+GROUP BY Harcerze.Imie, Harcerze.Nazwisko, Sprawnosc.Id_sprawnosci;
+
+b) SELECT [4_3].Imie, [4_3].Nazwisko, Count([4_3].Id_sprawnosci) AS PoliczOfId_sprawnosci
+FROM 4_3 INNER JOIN Sprawnosc ON [4_3].Id_sprawnosci = Sprawnosc.Id_sprawnosci
+GROUP BY [4_3].Imie, [4_3].Nazwisko
+ORDER BY Count([4_3].Id_sprawnosci) DESC;
+
+4) 
+a) SELECT Harcerze.Druzyna, Sprawnosc.Nazwa_sprawnosci
+FROM Sprawnosc INNER JOIN (Harcerze INNER JOIN Dzialania ON Harcerze.Id_harcerza = Dzialania.Id_harcerza) ON Sprawnosc.Id_sprawnosci = Dzialania.Id_sprawnosci
+GROUP BY Harcerze.Druzyna, Sprawnosc.Nazwa_sprawnosci
+HAVING (((Sprawnosc.Nazwa_sprawnosci)="ratownik"));
+
+b) SELECT Harcerze.Druzyna
+FROM Harcerze
+GROUP BY Harcerze.Druzyna;
+
+5) SELECT TOP 1 Harcerze.Imie, Harcerze.Nazwisko, Sum([Dzialania]![Koniec_dzial]-[Dzialania]![Poczatek_dzial]+1) AS Wyr1, Sprawnosc.Nazwa_sprawnosci
+FROM Sprawnosc INNER JOIN (Harcerze INNER JOIN Dzialania ON Harcerze.Id_harcerza = Dzialania.Id_harcerza) ON Sprawnosc.Id_sprawnosci = Dzialania.Id_sprawnosci
+GROUP BY Harcerze.Imie, Harcerze.Nazwisko, Sprawnosc.Nazwa_sprawnosci
+ORDER BY Sum([Dzialania]![Koniec_dzial]-[Dzialania]![Poczatek_dzial]+1) DESC;
+
+  

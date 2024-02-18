@@ -1,0 +1,9 @@
+1) SELECT grupy.nazwa FROM grupy WHERE nazwa LIKE "f%"
+
+2) SELECT COUNT(uczestnicy.id_czlonka) FROM uczestnicy WHERE uczestnicy.imie LIKE "%a"
+
+3) SELECT uczestnicy.imie, uczestnicy.nazwisko FROM uczestnicy, grupy, przynaleznosc WHERE grupy.nazwa = "zdrowe_odzywianie" AND uczestnicy.id_czlonka = przynaleznosc.id_czlonka AND grupy.id_grupy = przynaleznosc.id_grupy ORDER BY uczestnicy.imie ASC, uczestnicy.nazwisko ASC
+
+4) SELECT u.imie, u.nazwisko FROM uczestnicy u WHERE id_czlonka IN (SELECT ta.id_czlonka FROM (SELECT id_czlonka, COUNT(*) as ilosc FROM przynaleznosc GROUP BY id_czlonka HAVING ilosc = 10) as ta) ORDER BY u.nazwisko ASC
+
+5) SELECT g.nazwa, t.ilosc FROM grupy g JOIN (SELECT id_grupy, COUNT(id_czlonka) as ilosc FROM przynaleznosc p GROUP BY p.id_grupy ORDER BY ilosc DESC) as t ON (g.id_grupy = t.id_grupy) ORDER BY t.ilosc DESC LIMIT 1

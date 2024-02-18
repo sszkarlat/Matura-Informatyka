@@ -1,0 +1,20 @@
+1) SELECT * FROM `2020_grupy` g WHERE nazwa LIKE "f%"
+
+2) SELECT COUNT(*) as ilosc FROM `2020_uczestnicy` u WHERE u.imie LIKE "%a"
+
+3) SELECT u.imie, u.nazwisko FROM `2020_uczestnicy` u
+JOIN `2020sp_przynaleznosc` p ON (u.id_czlonka=p.id_czlonka)
+JOIN `2020_grupy` g ON (g.id_grupy=p.id_grupy)
+WHERE g.nazwa LIKE "zdrowe_odzywianie" 
+ORDER BY u.imie ASC, u.nazwisko ASC
+
+4) SELECT u.imie, u.nazwisko, COUNT(p.id_grupy) as ilosc FROM `2020_uczestnicy` u 
+JOIN `2020_przynaleznosc` p ON (p.id_czlonka=u.id_czlonka)
+GROUP BY u.imie, u.nazwisko
+HAVING ilosc = 10
+ORDER BY ilosc DESC
+
+5) SELECT g.nazwa, t.ilosc FROM `2020_grupy` g 
+JOIN (SELECT p.id_grupy, COUNT(id_czlonka) as ilosc FROM `2020_przynaleznosc` p 
+GROUP BY p.id_grupy ORDER BY ilosc DESC) as t ON (g.id_grupy = t.id_grupy) 
+ORDER BY t.ilosc DESC LIMIT 1

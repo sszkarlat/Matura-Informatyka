@@ -1,0 +1,19 @@
+1. SELECT o.imie, o.nazwisko FROM `osoby` o 
+JOIN `rezerwacje` r ON (r.id_osoby=o.id_osoby)
+GROUP BY o.imie, o.nazwisko
+HAVING COUNT(*) > 3
+ORDER BY o.nazwisko ASC;
+
+2. SELECT o.imie, o.nazwisko, SUM((r.dorosli*w.cena+r.dzieci*(cena*0.5))) as suma FROM `osoby` o 
+JOIN `rezerwacje` r ON (r.id_osoby=o.id_osoby)
+JOIN `wycieczki` w ON (w.id_wycieczki=r.id_wycieczki)
+GROUP BY o.imie, o.nazwisko
+ORDER BY suma DESC
+LIMIT 1;
+
+3. SELECT MONTH(w.data_od) as miesiac, COUNT(*) as ilosc FROM `wycieczki` w 
+JOIN `rezerwacje` r ON (r.id_wycieczki=w.id_wycieczki)
+GROUP BY MONTH(w.data_od);
+
+4. SSELECT wylot, kraj, COUNT(*) as ilosc FROM `wycieczki` 
+GROUP BY wylot, kraj;

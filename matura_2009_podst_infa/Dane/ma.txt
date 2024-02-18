@@ -1,0 +1,16 @@
+def is_prime(x):
+    if x < 2:
+        return False
+    else:
+        for y in range(2, x):
+            if x % y == 0:
+                return False
+    return True
+
+
+with open("liczby.txt", "r") as f:
+    t = f.read().splitlines()
+
+for l in t:
+    if int(l) ** 0.5 % 1 == 0 and is_prime(int(int(l) ** 0.5)):
+        print(l)

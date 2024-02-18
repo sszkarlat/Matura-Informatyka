@@ -1,0 +1,32 @@
+1) SELECT k.imie, k.nazwisko FROM `2016_zamowienia` z  
+JOIN `2016_produkty` p ON (p.ID_produktu=z.ID_produktu)
+JOIN `2016_klienci` k ON (k.ID_klienta=z.ID_klienta)
+WHERE p.Producent="HW" AND p.Grupa_towarowa LIKE "Notebooki"
+ORDER BY k.nazwisko ASC
+
+2) SELECT p.Nazwa_produktu, p.Grupa_towarowa, p.Producent FROM `2016_zamowienia` z  
+JOIN `2016_produkty` p ON (p.ID_produktu=z.ID_produktu)
+JOIN `2016_klienci` k ON (k.ID_klienta=z.ID_klienta)
+WHERE k.imie="Anna" AND k.nazwisko="Kotnicka"
+
+3) 
+a) SELECT k.ID_klienta, COUNT(z.ID_zamowienia) as liczba_zamowien FROM `2016_zamowienia` z 
+JOIN `2016_klienci` k ON (k.ID_klienta=z.ID_klienta)
+GROUP BY k.ID_klienta
+ORDER BY liczba_zamowien DESC
+LIMIT 1
+b) SELECT FROM `2016_klienci` WHERE ID_klienta="MS545"
+
+4) SELECT k.imie, k.nazwisko, tv.suma FROM `2016_klienci` k
+JOIN 
+(SELECT k.ID_klienta, SUM(p.Cena_brutto*z.Liczba_sztuk) as suma FROM `2016_zamowienia` z 
+JOIN `2016_klienci` k ON (k.ID_klienta=z.ID_klienta)
+JOIN `2016_produkty` p ON (p.ID_produktu=z.ID_produktu)
+GROUP BY k.ID_klienta) 
+as tv ON (k.ID_klienta=tv.ID_klienta)
+ORDER BY suma DESC
+LIMIT 3
+
+5) SELECT SUM(z.Liczba_sztuk) as Ilosc FROM `2016_zamowienia` z 
+JOIN `2016_produkty` p ON (p.ID_produktu=z.ID_produktu)
+WHERE p.Grupa_towarowa LIKE "Notebooki" AND z.Data LIKE "2013-03%"

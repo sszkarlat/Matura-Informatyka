@@ -1,0 +1,40 @@
+1. SELECT COUNT(*) as ilosc FROM `klienci` k 
+JOIN `umowy` u ON (u.ID_klienta=k.ID_klienta)
+WHERE u.data_zakonczenia LIKE "2018-06%"
+
+2. SELECT "I" as kto, COUNT(*) as ilosc FROM `umowy`
+WHERE ID_klienta LIKE "I%"
+
+UNION
+
+SELECT "E" as kto, COUNT(*) as ilosc FROM `umowy`
+WHERE ID_klienta LIKE "E%"
+
+UNION
+
+SELECT "F" as kto, COUNT(*) as ilosc FROM `umowy`
+WHERE ID_klienta LIKE "F%"
+
+3. SELECT k.ID_klienta, k.klient, k.miejscowosc FROM `klienci` k
+WHERE k.ID_klienta NOT IN 
+(SELECT k.ID_klienta FROM `klienci` k
+JOIN `umowy` u ON (u.ID_klienta=k.ID_klienta))
+
+4. SELECT k.klient, us.nazwa_uslugi, um.data_zakonczenia FROM `klienci` k
+JOIN `umowy` um ON (um.ID_klienta=k.ID_klienta)
+JOIN `uslugi` us ON (us.ID_uslugi=um.ID_uslugi)
+WHERE (YEAR(um.data_zakonczenia)-YEAR(um.data_rozpoczecia))=5
+ORDER BY um.data_zakonczenia ASC
+
+5. SELECT k.ID_klienta, k.klient, t.ilosc_poczta, COUNT(*) as ilosc_serwer FROM `klienci` k
+JOIN (SELECT k.ID_klienta, k.klient, COUNT(*) as ilosc_poczta FROM `klienci` k
+JOIN `umowy` um ON (um.ID_klienta=k.ID_klienta)
+JOIN `uslugi` us ON (us.ID_uslugi=um.ID_uslugi)
+WHERE us.nazwa_uslugi LIKE "%poczta%"
+GROUP BY k.ID_klienta, k.klient) as t ON (t.Id_klienta=k.ID_klienta)
+JOIN `umowy` um ON (um.ID_klienta=k.ID_klienta)
+JOIN `uslugi` us ON (us.ID_uslugi=um.ID_uslugi)
+WHERE us.nazwa_uslugi LIKE "%serwer www%"
+GROUP BY k.ID_klienta, k.klient
+HAVING t.ilosc_poczta >=4 AND ilosc_serwer >=3
+ORDER BY k.klient ASC

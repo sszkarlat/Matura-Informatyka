@@ -1,0 +1,41 @@
+1. SELECT Druzyna, COUNT(*) as ilosc FROM `2018_harcerze`
+GROUP BY Druzyna
+
+2. SELECT s.Nazwa_sprawnosci, SUM(L_punktow) as ilosc FROM `2018_sprawnosc` s
+JOIN `2018_dzialania` d ON (d.Id_sprawnosci=s.Id_sprawnosci)
+GROUP BY s.Nazwa_sprawnosci
+ORDER BY ilosc DESC
+LIMIT 1;
+
+SELECT s.Nazwa_sprawnosci, SUM(L_punktow) as ilosc FROM `2018_sprawnosc` s
+JOIN `2018_dzialania` d ON (d.Id_sprawnosci=s.Id_sprawnosci)
+GROUP BY s.Nazwa_sprawnosci
+ORDER BY ilosc ASC
+LIMIT 1
+
+3. SELECT h.imie, h.nazwisko, COUNT(DISTINCT(d.Id_sprawnosci)) as ilosc FROM `2018_dzialania` d
+JOIN `2018_sprawnosc` s ON (s.Id_sprawnosci=d.Id_sprawnosci)
+JOIN `2018_harcerze` h ON (h.Id_harcerza=d.Id_harcerza)
+GROUP BY h.imie, h.nazwisko 
+ORDER BY ilosc  DESC;
+SELECT DISTINCT s.nazwa_sprawnosci, h.nazwisko FROM `2018_dzialania` d
+JOIN `2018_sprawnosc` s ON (s.Id_sprawnosci=d.Id_sprawnosci)
+JOIN `2018_harcerze` h ON (h.Id_harcerza=d.Id_harcerza)
+WHERE h.nazwisko = "Majchrowicz" OR h.nazwisko = "Buczek"
+ORDER BY h.nazwisko  
+
+4. SELECT DISTINCT ha.Druzyna FROM `2018_harcerze` ha
+WHERE ha.Druzyna 
+NOT IN 
+(SELECT DISTINCT h.Druzyna FROM `2018_harcerze` h  
+JOIN `2018_dzialania` d ON (d.Id_harcerza=h.Id_harcerza)
+JOIN `2018_sprawnosc` s ON (s.Id_sprawnosci=d.Id_sprawnosci)
+WHERE s.Nazwa_sprawnosci LIKE "ratownik")
+
+5. SELECT h.imie, h.nazwisko, s.Nazwa_sprawnosci, t.dni
+FROM (SELECT d.Id_harcerza, d.Id_sprawnosci, SUM(DATEDIFF(d.Koniec_dzial,d.Poczatek_dzial)+1) as dni FROM `2018_dzialania` d 
+GROUP BY d.Id_harcerza, d.Id_sprawnosci
+ORDER BY dni DESC
+LIMIT 1) as t 
+JOIN `2018_harcerze` h ON (h.Id_harcerza=t.Id_harcerza)
+JOIN `2018_sprawnosc` s ON (s.Id_sprawnosci=t.Id_sprawnosci)

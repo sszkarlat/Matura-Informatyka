@@ -1,0 +1,47 @@
+1) 
+a) SELECT "T" as rodz, COUNT(d.ID_druzyny) as ilosc_meczy FROM `2017r_druzyny` d 
+JOIN `2017r_wyniki` w ON (w.ID_druzyny=d.ID_druzyny)
+WHERE d.Miasto LIKE "Kucykowo" AND w.Rodzaj_meczu="T"
+
+UNION
+
+SELECT "L" as rodz, COUNT(d.ID_druzyny) as ilosc_meczy FROM `2017r_druzyny` d 
+JOIN `2017r_wyniki` w ON (w.ID_druzyny=d.ID_druzyny)
+WHERE d.Miasto LIKE "Kucykowo" AND w.Rodzaj_meczu="L"
+
+UNION
+
+SELECT "P" as rodz, COUNT(d.ID_druzyny) as ilosc_meczy FROM `2017r_druzyny` d 
+JOIN `2017r_wyniki` w ON (w.ID_druzyny=d.ID_druzyny)
+WHERE d.Miasto LIKE "Kucykowo" AND w.Rodzaj_meczu="P"
+
+b) SELECT YEAR(w.data_meczu) as rok, COUNT(d.ID_druzyny) as liczba_meczy FROM `2017r_druzyny` d 
+JOIN `2017r_wyniki` w ON (w.ID_druzyny=d.ID_druzyny)
+WHERE d.Miasto LIKE "Kucykowo"
+GROUP BY YEAR(w.data_meczu)
+ORDER BY liczba_meczy DESC
+
+2) SELECT d.Nazwa FROM `2017r_druzyny` d 
+JOIN (SELECT d.Nazwa, SUM(w.Bramki_zdobyte) as zdo, SUM(w.Bramki_stracone) as str FROM `2017r_druzyny` d 
+JOIN `2017r_wyniki` w ON (w.ID_druzyny=d.ID_druzyny)
+GROUP BY d.Nazwa) as t ON (t.Nazwa=d.Nazwa)
+WHERE t.zdo-t.str=0
+
+3) SELECT "wygrane" as wynik, COUNT(*) as liczba_meczy FROM `2017r_wyniki` w 
+WHERE w.Bramki_zdobyte>w.Bramki_stracone
+AND w.Gdzie LIKE "W"
+
+UNION
+
+SELECT "przegrane" as wynik, COUNT(*) as liczba_meczy FROM `2017r_wyniki` w 
+WHERE w.Bramki_zdobyte<w.Bramki_stracone
+AND w.Gdzie LIKE "W"
+
+UNION
+
+SELECT "remisy" as wynik, COUNT(*) as liczba_meczy FROM `2017r_wyniki` w 
+WHERE w.Bramki_zdobyte=w.Bramki_stracone
+AND w.Gdzie LIKE "W"
+
+4) SELECT 154-COUNT(DISTINCT w.Nr_licencji) as liczba_sedziow FROM `2017r_wyniki` w
+WHERE w.Rodzaj_meczu LIKE "P"

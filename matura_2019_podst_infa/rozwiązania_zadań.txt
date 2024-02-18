@@ -1,0 +1,29 @@
+1) SELECT Publikacje.ID_publikacji, Publikacje.Tytul, Publikacje.Cena
+FROM Publikacje
+WHERE (((Publikacje.ID_publikacji) Like "a*") AND ((Publikacje.Cena)>45)) OR (((Publikacje.ID_publikacji) Like "e*") AND ((Publikacje.Cena)>120))
+ORDER BY Publikacje.Cena DESC;
+
+2) SELECT Publikacje.Autor, Publikacje.Tytul, Dziedziny.Dziedzina
+FROM Dziedziny INNER JOIN (Publikacje INNER JOIN Zakupy ON Publikacje.ID_publikacji = Zakupy.ID_publikacji) ON Dziedziny.ID_dziedziny = Publikacje.ID_dziedziny
+WHERE (((Dziedziny.Dziedzina)="informatyka" Or (Dziedziny.Dziedzina)="ekonomia") AND ((Publikacje.[Rok wydania])=2014) AND ((Zakupy.Nick_klienta)="flipher"));
+
+3) SELECT Dziedziny.Dziedzina, Avg(Publikacje.Cena) AS ŚredniaOfCena
+FROM Dziedziny INNER JOIN Publikacje ON Dziedziny.ID_dziedziny = Publikacje.ID_dziedziny
+GROUP BY Dziedziny.Dziedzina;
+
+4) SELECT TOP 1 Dziedziny.Dziedzina, Count(Zakupy.ID_publikacji) AS PoliczOfID_publikacji
+FROM (Dziedziny INNER JOIN Publikacje ON Dziedziny.ID_dziedziny = Publikacje.ID_dziedziny) INNER JOIN Zakupy ON Publikacje.ID_publikacji = Zakupy.ID_publikacji
+GROUP BY Dziedziny.Dziedzina
+ORDER BY Count(Zakupy.ID_publikacji) DESC;
+
+5) 
+a) SELECT Zakupy.Nick_klienta, Sum(Publikacje.Cena) AS SumaOfCena
+FROM Publikacje INNER JOIN Zakupy ON Publikacje.ID_publikacji = Zakupy.ID_publikacji
+GROUP BY Zakupy.Nick_klienta
+ORDER BY Sum(Publikacje.Cena) DESC;
+
+b) SELECT [5_5_1].Nick_klienta, [5_5_1].SumaOfCena
+FROM 5_5_1
+WHERE ((([5_5_1].SumaOfCena)=(SELECT MAX(SumaOfCena)FROM 5_5_1) Or ([5_5_1].SumaOfCena)=(SELECT MIN(SumaOfCena)FROM 5_5_1)));
+
+ 

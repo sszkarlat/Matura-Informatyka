@@ -1,0 +1,14 @@
+1) SELECT COUNT(u.id_ucznia) AS Ile_uczniow FROM `2017_uczniowie` u WHERE u.imie LIKE "%a" UNION SELECT COUNT(u.id_ucznia) FROM `2017_uczniowie` u WHERE u.imie NOT LIKE "%a"
+
+2) SELECT k.imie, k.nazwisko, COUNT(g.id_glosu) as Ile_glosow FROM `2017_glosy` g 
+JOIN `2017_kandydaci` k ON (k.id_kandydata=g.id_kandydata)
+GROUP BY k.id_kandydata 
+ORDER BY Ile_glosow  DESC 
+LIMIT 10
+
+3) SELECT COUNT(DISTINCT g.id_ucznia) as ilosc FROM `2017_glosy` g
+#Następnie odejmujemy 2100-1403=697 
+
+4) SELECT u.rok_nauki, ROUND(Count(g.id_glosu)/9,2) as Policz FROM `2017_uczniowie` u
+JOIN `2017_glosy` g ON (u.id_ucznia=g.id_ucznia) 
+GROUP BY u.rok_nauki

@@ -1,0 +1,52 @@
+1) SELECT z.imie, z.nazwisko, c.czas FROM `zawodnicy` z 
+JOIN `startujacy` s ON (s.id_zawodnika=z.id_zawodnika)
+JOIN `czasy` c ON (c.id_startu=s.id_startu)
+ORDER BY c.czas ASC
+LIMIT 1
+
+2) SELECT z.imie, z.nazwisko, t.ilosc FROM `zawodnicy` z
+JOIN (SELECT z.id_zawodnika, COUNT(s.id_startu) as ilosc FROM `zawodnicy` z 
+JOIN `startujacy` s ON (s.id_zawodnika=z.id_zawodnika)
+WHERE s.obywatel_kraju LIKE "Polska"
+GROUP BY z.id_zawodnika
+ORDER BY ilosc DESC
+LIMIT 1) as t ON (t.id_zawodnika=z.id_zawodnika)
+
+3) SELECT t.imie, t.nazwisko, t.rok, t.wiek FROM
+(SELECT z.imie, z.nazwisko, s.rok, (s.rok-YEAR(z.data)) as wiek FROM `zawodnicy` z 
+JOIN `startujacy` s ON (s.id_zawodnika=z.id_zawodnika)
+GROUP BY z.imie, z.nazwisko, s.rok
+ORDER BY s.rok ASC, wiek ASC) as t 
+GROUP BY t.rok
+ORDER BY t.rok ASC, t.wiek
+
+4) SELECT st.rok, COUNT(DISTINCT st.id_zawodnika) as ilosc FROM `startujacy` st 
+WHERE st.id_startu NOT IN
+(SELECT c.id_startu FROM `startujacy` s 
+JOIN `czasy` c ON (c.id_startu=s.id_startu))
+GROUP BY st.rok
+ORDER BY ilosc DESC
+LIMIT 1
+
+5) SELECT t.rok, COUNT(t.nazwa) as ilosc
+FROM (SELECT s.rok, g.nazwa, COUNT(DISTINCT s.obywatel_kraju) ilosc FROM `grupy` g 
+JOIN `startujacy` s ON (s.kod_grupy=g.kod_grupy)
+GROUP BY s.rok, g.nazwa
+HAVING ilosc=1) as t
+GROUP BY t.rok
+ORDER BY ilosc DESC
+LIMIT 1;
+#Następnie wypisujemy nazwy grup
+SELECT t.rok, t.nazwa
+FROM (SELECT s.rok, g.nazwa, COUNT(DISTINCT s.obywatel_kraju) ilosc FROM `grupy` g 
+JOIN `startujacy` s ON (s.kod_grupy=g.kod_grupy)
+GROUP BY s.rok, g.nazwa
+HAVING ilosc=1) as t
+WHERE t.rok LIKE "2011";
+
+
+6) SELECT DISTINCT z.imie, z.nazwisko, s.obywatel_kraju FROM `zawodnicy` z
+JOIN `startujacy` s ON (s.id_zawodnika=z.id_zawodnika)
+JOIN (SELECT s.id_zawodnika, COUNT(DISTINCT s.obywatel_kraju) as ile_panstw FROM `startujacy` s
+GROUP BY s.id_zawodnika
+HAVING ile_panstw >1) as t ON (t.id_zawodnika=z.id_zawodnika);
