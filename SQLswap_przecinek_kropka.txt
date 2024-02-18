@@ -1,0 +1,1 @@
+UPDATE `konta` k SET k.dostepne_srodki=REPLACE(k.dostepne_srodki,',','.')
