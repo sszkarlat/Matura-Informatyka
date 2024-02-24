@@ -1,4 +1,4 @@
-kod_zabiegu	dzial	zabieg	cena (zl)
+kod_zabiegu	dzial	zabieg	cena
 POO1	PIELEGNACJA OPRAWY OCZU	Henna brwi	15
 POO2	PIELEGNACJA OPRAWY OCZU	Henna rzes	15
 POO3	PIELEGNACJA OPRAWY OCZU	Regulacja brwi	10

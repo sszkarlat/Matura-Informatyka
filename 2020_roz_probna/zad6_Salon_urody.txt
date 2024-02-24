@@ -2,19 +2,24 @@
 JOIN `wizytydane` wd ON (wd.id_klienta=k.id_klienta)
 JOIN `wizytyzabiegi` wz ON (wz.id_wizyty=wd.id_wizyty)
 JOIN `zabiegi` z ON (z.kod_zabiegu=wz.kod_zabiegu)
-WHERE k.imie LIKE "Alicja" AND k.nazwisko LIKE "Kowalska"
+WHERE k.imie LIKE "Alicja" AND k.nazwisko LIKE "Kowalska";
 
 2. SELECT k.imie, k.nazwisko, COUNT(*) as ilosc FROM `klienci` k
 JOIN `wizytydane` wd ON (wd.id_klienta=k.id_klienta)
 GROUP BY k.imie, k.nazwisko
 ORDER BY ilosc DESC
-LIMIT 1
+LIMIT 1;
 
-3. SELECT wd.data FROM `wizytydane` wd
+3. SELECT COUNT(wd.data) as ilosc FROM `wizytydane` wd
 JOIN `wizytyzabiegi` wz ON (wz.id_wizyty=wd.id_wizyty)
 JOIN `zabiegi` z ON (z.kod_zabiegu=wz.kod_zabiegu)
 WHERE z.zabieg LIKE "Magia Hawajow"
-ORDER BY wd.data DESC
+ORDER BY wd.data DESC;
+SELECT wd.data FROM `wizytydane` wd
+JOIN `wizytyzabiegi` wz ON (wz.id_wizyty=wd.id_wizyty)
+JOIN `zabiegi` z ON (z.kod_zabiegu=wz.kod_zabiegu)
+WHERE z.zabieg LIKE "Magia Hawajow"
+ORDER BY wd.data DESC;
 
 4. SELECT COUNT(DISTINCT k.id_klienta)as ilosc FROM `klienci` k
 JOIN `wizytydane` wd ON (wd.id_klienta=k.id_klienta)
@@ -25,10 +30,10 @@ SELECT SUM(z.cena*0.8) as kwota FROM `klienci` k
 JOIN `wizytydane` wd ON (wd.id_klienta=k.id_klienta)
 JOIN `wizytyzabiegi` wz ON (wz.id_wizyty=wd.id_wizyty)
 JOIN `zabiegi` z ON (z.kod_zabiegu=wz.kod_zabiegu)
-WHERE z.dzial LIKE "MAKIJAZ" AND "2017-12-06"<=wd.data AND wd.data<="2018-01-15"
+WHERE z.dzial LIKE "MAKIJAZ" AND "2017-12-06"<=wd.data AND wd.data<="2018-01-15";
 
 5. SELECT z.zabieg FROM `zabiegi` z
 WHERE z.dzial LIKE "FRYZJER MESKI" AND z.zabieg NOT IN (SELECT DISTINCT z.zabieg FROM `wizytydane` wd
 JOIN `wizytyzabiegi` wz ON (wz.id_wizyty=wd.id_wizyty)
 JOIN `zabiegi` z ON (z.kod_zabiegu=wz.kod_zabiegu)
-WHERE z.dzial LIKE "FRYZJER MESKI")
+WHERE z.dzial LIKE "FRYZJER MESKI");
