@@ -20,13 +20,23 @@ ORDER BY s.rok ASC, wiek ASC) as t
 GROUP BY t.rok
 ORDER BY t.rok ASC, t.wiek
 
-4) SELECT st.rok, COUNT(DISTINCT st.id_zawodnika) as ilosc FROM `startujacy` st 
-WHERE st.id_startu NOT IN
-(SELECT c.id_startu FROM `startujacy` s 
-JOIN `czasy` c ON (c.id_startu=s.id_startu))
-GROUP BY st.rok
-ORDER BY ilosc DESC
-LIMIT 1
+4) SELECT t1.imie, t1.nazwisko, t1.rok, t1.wiek
+FROM  
+(SELECT z.imie, z.nazwisko, s.rok, (s.rok-Year(z.data)) AS wiek
+FROM `zawodnicy` z 
+INNER JOIN `startujacy` s 
+ON (z.id_zawodnika = s.id_zawodnika)) as t1
+
+INNER JOIN
+(SELECT s.rok, Min(s.rok-Year(z.data)) AS wiek
+FROM `zawodnicy` z 
+INNER JOIN `startujacy` s 
+ON (z.id_zawodnika=s.id_zawodnika)
+GROUP BY s.rok
+ORDER BY s.rok) as t2
+
+ON ((t1.rok = t2.rok) AND (t1.wiek = t2.wiek))
+ORDER BY t1.rok
 
 5) SELECT t.rok, COUNT(t.nazwa) as ilosc
 FROM (SELECT s.rok, g.nazwa, COUNT(DISTINCT s.obywatel_kraju) ilosc FROM `grupy` g 
