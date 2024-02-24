@@ -1,34 +1,50 @@
-1) SELECT g.kraj, COUNT(*) as liczba_graczy FROM `2021r_gracze` g
+1) SELECT g.kraj, COUNT(*) AS liczba_graczy FROM `gracze` g
 WHERE g.data_dolaczenia LIKE "2018%"
 GROUP BY g.kraj
 ORDER BY liczba_graczy DESC
-LIMIT 5
+LIMIT 5;
 
-2) SELECT k.nazwa, SUM(k.strzal) as suma FROM `2021r_klasy` k
-JOIN `2021r_jednostki` j ON (j.nazwa=k.nazwa)
+2) SELECT k.nazwa, SUM(k.strzal) AS suma FROM `klasy` k
+JOIN `jednostki` j ON (j.nazwa=k.nazwa)
 WHERE k.nazwa LIKE "%elf%"
-GROUP BY k.nazwa
+GROUP BY k.nazwa;
 
-3) SELECT DISTINCT je.id_gracza FROM `2021r_jednostki` je 
-WHERE je.id_gracza NOT IN (SELECT j.id_gracza FROM `2021r_jednostki` j 
+3) SELECT DISTINCT je.id_gracza FROM `jednostki` je 
+WHERE je.id_gracza NOT IN (SELECT j.id_gracza FROM `jednostki` j 
 WHERE j.nazwa LIKE "artylerzysta")
-ORDER BY je.id_gracza ASC
+ORDER BY je.id_gracza ASC;
 
-4) SELECT je.nazwa, COUNT(t.ilosc) as liczba_jednostek FROM `2021r_jednostki` je
-JOIN (SELECT j.id_jednostki, (ABS(j.lok_x-100)+ABS(j.lok_y-100)<=k.szybkosc) as ilosc FROM `2021r_jednostki` j 
-JOIN `2021r_klasy` k ON (k.nazwa=j.nazwa)
-HAVING ilosc=1) as t ON (t.id_jednostki=je.id_jednostki)
-GROUP BY je.nazwa
+4) SELECT je.nazwa, COUNT(t.ilosc) AS liczba_jednostek FROM `jednostki` je
+JOIN (SELECT j.id_jednostki, (ABS(j.lok_x-100)+ABS(j.lok_y-100)<=k.szybkosc) AS ilosc FROM `jednostki` j 
+JOIN `klasy` k ON (k.nazwa=j.nazwa)
+HAVING ilosc=1) AS t ON (t.id_jednostki=je.id_jednostki)
+GROUP BY je.nazwa;
 
 5) 
-a) SELECT j.lok_x, j.lok_y, COUNT(DISTINCT j.id_gracza) as ilosc FROM `2021r_jednostki` j 
+a) SELECT COUNT(*) AS bitwy FROM
+(SELECT j.lok_x, j.lok_y, COUNT(DISTINCT j.id_gracza) AS ilosc FROM `jednostki` j 
 GROUP BY j.lok_x, j.lok_y
-HAVING ilosc>1
-#Następnie odczytujemy liczbę wierszy. Jest ich 1061, więc 1061 bitew ma miejsce na planszy. 
+HAVING ilosc>1) AS t;
 
-b) SELECT j.lok_x, j.lok_y, COUNT(DISTINCT j.id_gracza) as ilosc FROM `2021r_jednostki` j
-JOIN `2021r_gracze` g ON (g.id_gracza=j.id_gracza)
-WHERE g.kraj LIKE "Polska"
+b) 
+# zewnętrzne zapytanie
+# - zlicza liczbę wierszy, równie dobrze można to odczytać
+# wykonując jedynie wewnętrzne zapytanie
+SELECT COUNT(*) AS polskie_bitwy FROM 
+
+# wewnętrzne zapytanie 
+# - wyświelta koordynaty dla graczy z Polski 
+# (którzy uczestniczą w bitwie - klauzula WHERE ... IN ... AND ...)
+(SELECT DISTINCT j.lok_x, j.lok_y 
+FROM `jednostki` j
+JOIN `gracze` g ON (g.id_gracza = j.id_gracza)
+WHERE (j.lok_x, j.lok_y) IN
+
+# najbardziej wewnętrzne zapytanie (od którego zaczynamy zadanie!)
+# - wyświetla koordynaty, na których toczą się bitwy
+(SELECT j.lok_x, j.lok_y FROM `jednostki` j
+JOIN `gracze` g ON (g.id_gracza=j.id_gracza)
 GROUP BY j.lok_x, j.lok_y
-HAVING ilosc>1
-#ŹLE!!!
+HAVING COUNT(DISTINCT j.id_gracza) >1)
+
+AND g.kraj = "Polska") AS t;
